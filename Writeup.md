@@ -26,7 +26,35 @@ Many tools already exist to do (some of) these things using the Raspberry Pi. Si
 | Ethsploiter  | 1 | C&C, LEAVE | https://github.com/maxiwoj/Ethsploiter | Very cool idea, emulates an ethernet card over USB and provides a new network (with the Pi and the victim in it) for the victim. No shell/reverse shell built-in for the Raspberry Pi yet, but this should be easy to add so I'm confident this can satisfy both physical attack requirements  |
 | DuckBerry Pi | 2 | C&C, LEAVE | https://github.com/ossiozac/Raspberry-Pi-Zero-Rubber-Ducky-Duckberry-Pi | Since this registers as a HID, I don't know if the C&C requirement can be satisfied |
 | SwissArmyPi  | 0  | N/A  | https://github.com/vs4vijay/SwissArmyPi | I think this is not actually a real tool.  |
-| pwnhyve  |   |   | https://github.com/whatotter/pwnhyve |   |
-| Bettercap |   |   | https://github.com/bettercap/bettercap |   |
+| pwnhyve  | 5  | C&C, LEAVE, AP, SNIFF, DEAUTH  | https://github.com/whatotter/pwnhyve |   |
+| Bettercap |   |   | https://github.com/bettercap/bettercap | This seems to be what I'm looking for. However, it is currently undergoing a rewrite (31-07-2024) so likely to be confronted with bugs  |
 | PoisonTap |   |   | https://github.com/samyk/poisontap |   |
+| P4wnP1 A.L.O.A. |   |   | https://github.com/RoganDawes/P4wnP1_aloa  |   |
+| Pwnagotchi  | 2 | DEAUTH, SNIFF  | https://github.com/evilsocket/pwnagotchi/  | This looks like an amazing tool specifically targeting WiFi. If there is a way to combine this with some tool to perform the physical attack requirements, this would be amazing. |
 |   |   |   |   |   |
+|   |   |   |   |   |
+|   |   |   |   |   |
+
+
+
+## Process
+1. Enabling SSH & connecting to the Pi
+
+I had already installed Raspbian v12 (Bookworm) on the Pi from a previous project. After signing into the Pi, I enabled SSH using the GUI (under "Preferences):
+
+![image](https://github.com/user-attachments/assets/379beaf8-51f4-4af9-bbc6-6fdf2638dc9f)
+
+(source: https://www.howtogeek.com/768053/how-to-ssh-into-your-raspberry-pi/)
+
+This enables you to connect to the Pi remotely, which is useful since working directly on the Pi can be very slow and it can be cumbersome to have to work using multiple devices.
+
+I also connected the Pi to a WiFi network administered by me and assigned a static IP address to it. You can find a good tutorial on how to do this here: https://raspberrytips.com/set-static-ip-address-raspberry-pi/. 
+
+Please ensure you connect both your Raspberry Pi and your PC to the same network. Once this is done, you can connect to the Pi remotely over SSH using the same credentials you use to sign-in locally on the Pi:
+```
+ssh username@192.168.x.x
+```
+`username` should be replaced with your username on the Raspberry Pi and `192.168.x.x` should be replaced with the static IP address you assigned to the Raspberry Pi.
+
+
+2. 
