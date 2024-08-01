@@ -35,7 +35,7 @@ Many tools already exist to do (some of) these things using the Raspberry Pi. Si
 This list is probably not exhaustive but good enough for our current purposes, since `pwnhyve` appears to fulfill all requirements.
 
 ## Process
-1. Enabling SSH & connecting to the Pi
+### Enabling SSH & connecting to the Pi
 
 I had already installed Raspbian v12 (Bookworm) on the Pi from a previous project. After signing into the Pi, I enabled SSH using the GUI (under "Preferences):
 
@@ -48,17 +48,47 @@ This enables you to connect to the Pi remotely, which is useful since working di
 I also connected the Pi to a WiFi network administered by me and assigned a static IP address to it. You can find a good tutorial on how to do this here: https://raspberrytips.com/set-static-ip-address-raspberry-pi/. 
 
 Please ensure you connect both your Raspberry Pi and your PC to the same network. Once this is done, you can connect to the Pi remotely over SSH using the same credentials you use to sign-in locally on the Pi:
-```
+```cmd
 ssh username@192.168.x.x
 ```
 `username` should be replaced with your username on the Raspberry Pi and `192.168.x.x` should be replaced with the static IP address you assigned to the Raspberry Pi.
 
 
-2. Installing [pwnhyve](https://github.com/whatotter/pwnhyve)
+### Installing [pwnhyve](https://github.com/whatotter/pwnhyve)
 The wiki guides you through installing pwnhyve: https://github.com/whatotter/pwnhyve/wiki/installing
 
 First, we need to get the Kali ARM image for the Raspberry Pi Zero 2 W: https://www.kali.org/docs/arm/raspberry-pi-zero-2-w/
 
+It states that we need to be careful to install the image to the correct drive path, since it will wipe out the microSD card. I first checked my drive paths:
+```bash
+sudo fdisk -x
+```
+![image](https://github.com/user-attachments/assets/8e3504ca-cd1e-4410-9c91-6d1656f0b3d1)
+
+This shows the partitions on the device. I also used
+```bash
+df -h
+```
+![image](https://github.com/user-attachments/assets/8caadbf2-0cee-4a8d-a437-dad376adb4c5)
+
+This displays the amount of space available on the file system. Due to the size of the disks, the microSD card appears to be located at `/dev/mmcblk0p2` (size: 29 GB). This is also confirmed up by the Raspberry Pi documentation on partitioning: [https://github.com/raspberrypi/noobs/wiki/Standalone-partitioning-explained](https://github.com/raspberrypi/noobs/wiki/Standalone-partitioning-explained). We will therefore install the image to the drive at `/dev/mmcblk0p2`
+
+I downloaded the Kali ARM image to the Raspberry Pi while in my home directory (`/home/alskedaske`):
+```bash
+wget https://kali.download/arm-images/kali-2024.2/kali-linux-2024.2-raspberry-pi-zero-2-w-armhf.img.xz
+```
+This takes ~20 minutes to download.
+
+I tried to install the image on the microSD card but it gave me an error within less than a second. Other commands also give an input/output error. This usually indicates a hardware issue and may be an indication that the installation did not succeed.
+![image](https://github.com/user-attachments/assets/328226af-6bae-456b-9217-118182ffeede)
+
+ However, since I was not sure what the Pi was doing, I decided to wait ~1 hour. My thought process was that the installation may be taking place, causing commands other than the core GNU commands (which may be in another parition?) may be failing. I also tried to navigate to the file systems After this, I rebooted the Pi and tried to connect to it again using SSH from my laptop:
+ 
+```cmd
+ssh username@192.168.x.x
+```
+
+This did not work and after logging into my router, the Pi was not connected to it. I decided to connect a screen and keyboard to it and see what was up. It showed me a CLI with (initramfs):
 
 
-
+This indicates that the installation of the image did not go as intended. Initramfs is the first root filesystem a machine has access to and upon which other filesystems (e.g. Kali Linux) would be mounted. 
