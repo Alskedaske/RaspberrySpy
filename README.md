@@ -202,3 +202,32 @@ mkdosfs /piusb.bin
 
 
 ### USB module run on boot
+
+We need to ensure the module runs on boot. The wiki suggests using `rc.local`, which was not present in `/etc` yet, so I created it with `nano`. I did some research in how to use the `rc.local` file and found that you can just create it if it does not yet exist. I added the lines on the wiki and `cat`ed the file to check its contents:
+![image](https://github.com/user-attachments/assets/426d83fd-cf0a-4a52-9f7c-09f0e6ae471d)
+
+### Making `pwnhyve` start on boot.
+The wiki says to do this:
+```bash
+cp ./core/installation/startup.sh /bin/
+mv /bin/startup.sh /bin/pwnhyveStart
+pwd # save the output of this command, in your memory or ctrl+c
+chmod +x /bin/pwnhyveStart
+nano /bin/pwnhyveStart
+```
+I did this and replaced all `%cwd%` in the file with pwd value `/home/kali/pwnhyve`:
+![image](https://github.com/user-attachments/assets/35b78023-fabc-49ce-8ae0-4ccdb964ea57)
+
+### Final part
+I did:
+```bash
+cp ./core/installation/pwnhyve.service /etc/systemd/system/
+systemctl enable pwnhyve.service
+```
+![image](https://github.com/user-attachments/assets/7454c69a-d0ce-4b84-a546-4b2ec45fee0e)
+
+and started the pwnhyve service:
+```bash
+systemctl start pwnhyve.service
+```
+
